@@ -28,10 +28,15 @@ User.sync().then(() => {
   });
 });
 
-
+// GitHub認証の準備
 var GitHubStrategy = require('passport-github2').Strategy;
 var GITHUB_CLIENT_ID = '46ac5ebb34b36b63bc8a';
 var GITHUB_CLIENT_SECRET = '72eb624764351a6e729126ba56178d9cd21959c1';
+
+// Twitter認証の準備
+var TwitterStrategy = require('passport-twitter').Strategy;
+var TWITTER_CONSUMER_KEY = '423xwwllAG9kpDgZGPjwRDomY';
+var TWITTER_CONSUMER_SECRET = 'tt85xQ1uf1fMO1tWnhDeRElFbErXh7R20Rwbze3JXk4vfmB0VV';
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -41,19 +46,19 @@ passport.deserializeUser(function (obj, done) {
   done(null, obj);
 });
 
-
+// GitHubでログインします！
 passport.use(new GitHubStrategy({
   clientID: GITHUB_CLIENT_ID,
   clientSecret: GITHUB_CLIENT_SECRET,
-// 設定URLを「localhost → example.net」にしてあります。「GitHub登録」と「hostsファイル」の設定も変更しましょう
+  // 設定URLを「localhost → example.net」にしてあります。「GitHub登録」と「hostsファイル」の設定も変更しましょう
   callbackURL: 'http://example.net:8000/auth/github/callback'
 },
-// GitHub認証後の処理
+  // GitHub認証後の処理
   function (accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
       User.upsert({
-        userProvider: "Github",
         userId: profile.id,
+        userProvider: "GitHub",
         username: profile.username
       }).then(() => {
         done(null, profile);
@@ -62,6 +67,25 @@ passport.use(new GitHubStrategy({
   }
 ));
 
+// Twitterでログインします！
+passport.use(new TwitterStrategy({
+  consumerKey: TWITTER_CONSUMER_KEY,
+  consumerSecret: TWITTER_CONSUMER_SECRET,
+  callbackURL: "http://example.net:8000/auth/twitter/callback"
+},
+// 認証後アクション
+function (accessToken, refreshToken, profile, done) {
+  process.nextTick(function () {
+    User.upsert({
+      userId: profile.id,
+      userProvider: "Twitter",
+      username: profile.username
+    }).then(() => {
+      done(null, profile);
+    });
+  });
+}
+));
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
@@ -88,16 +112,27 @@ app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 
+// GitHub認証のハンドラ
 app.get('/auth/github',
   passport.authenticate('github', { scope: ['user:email'] }),
   function (req, res) {
 });
-
+    // コールバック
 app.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function (req, res) {
     res.redirect('/');
 });
+
+// Twitter認証のハンドラ
+app.get('/auth/twitter',
+ passport.authenticate('twitter'),
+ function (req, res) {
+});
+    // callbackのハンドラ
+app.get('/auth/twitter/callback',
+  passport.authenticate('twitter', { successRedirect: '/',
+                                     failureRedirect: '/login' }));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
