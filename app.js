@@ -42,7 +42,8 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new GitHubStrategy({
   clientID: GITHUB_CLIENT_ID,
   clientSecret: GITHUB_CLIENT_SECRET,
-  callbackURL: 'http://localhost:8000/auth/github/callback'
+// 設定URLを「localhost → example.net」にしてあります。「GitHub登録」と「hostsファイル」の設定も変更しましょう
+  callbackURL: 'http://example.net:8000/auth/github/callback'
 },
 // GitHub認証後の処理
   function (accessToken, refreshToken, profile, done) {
