@@ -14,11 +14,14 @@ var Availability = require('./models/availability');
 var Candidate = require('./models/candidate');
 var Comment = require('./models/comment');
 User.sync().then(() => {
-  Schedule.belongsTo(User, {foreignKey: 'createdBy'});
+  Schedule.belongsTo(User, {foreignKey: 'createdBy',targetKey:'userId'});
+  Schedule.belongsTo(User, {foreignKey: 'userProvider',targetKey: 'userProvider'});
   Schedule.sync();
-  Comment.belongsTo(User, {foreignKey: 'userId'});
+  Comment.belongsTo(User, {foreignKey: 'userId',targetKey:'userId'});
+  Comment.belongsTo(User, {foreignKey: 'userProvider',targetKey:'userProvider'});
   Comment.sync();
-  Availability.belongsTo(User, {foreignKey: 'userId'});
+  Availability.belongsTo(User, {foreignKey: 'userId',targetKey:'userId'});
+  Availability.belongsTo(User, {foreignKey: 'userProvider',targetKey: 'userProvider'});
   Candidate.sync().then(() => {
     Availability.belongsTo(Candidate, {foreignKey: 'candidateId'});
     Availability.sync();
@@ -49,6 +52,7 @@ passport.use(new GitHubStrategy({
   function (accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
       User.upsert({
+        userProvider: "Github",
         userId: profile.id,
         username: profile.username
       }).then(() => {
