@@ -58,7 +58,7 @@ passport.use(new GitHubStrategy({
     process.nextTick(function () {
       User.upsert({
         userId: profile.id,
-        userProvider: "GitHub",
+        userProvider: profile.provider,
         username: profile.username
       }).then(() => {
         done(null, profile);
@@ -78,7 +78,7 @@ function (accessToken, refreshToken, profile, done) {
   process.nextTick(function () {
     User.upsert({
       userId: profile.id,
-      userProvider: "Twitter",
+      userProvider: profile.provider,
       username: profile.username
     }).then(() => {
       done(null, profile);
@@ -90,6 +90,7 @@ function (accessToken, refreshToken, profile, done) {
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
+var schedulesRouter = require('./routes/schedules');
 
 var app = express();
 app.use(helmet());
@@ -111,6 +112,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
+app.use('/schedules', schedulesRouter);
 
 // GitHub認証のハンドラ
 app.get('/auth/github',
@@ -149,5 +151,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 module.exports = app;
