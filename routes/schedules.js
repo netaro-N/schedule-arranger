@@ -74,13 +74,41 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
             availabilityMapMap.set(mapMapKey, map);
           });
 
+          // 閲覧ユーザーと出欠に紐づくユーザーからユーザー Map (キー:ユーザー ID+Provider, 値:ユーザー) を作る
+          const userMap = new Map(); // key: userId+Provider, value: User
+          userMap.set(parseInt(req.user.id)+req.user.provider, {
+              isSelf: true,
+              userId: parseInt(req.user.id),
+              userProvider: req.user.userProvider,
+              username: req.user.username
+          });
+          availabilities.forEach((a) => {
+            userMap.set(a.user.userId+a.user.userProvider, {
+              isSelf: parseInt(req.user.id)+req.user.provider === a.user.userId+a.user.userProvider, // 閲覧ユーザー自身であるかを含める
+              userId: a.user.userId,
+              userProvider:a.user.userProvider,
+              username: a.user.username
+            });
+          });
+
+          // 全ユーザー、全候補で二重ループしてそれぞれの出欠の値がない場合には、「欠席」を設定する
+          const users = Array.from(userMap).map((keyValue) => keyValue[1]);
+          users.forEach((u) => {
+            candidates.forEach((c) => {
+              const mapMapKey = u.userId+u.userProvider;
+              const map = availabilityMapMap.get(mapMapKey) || new Map();
+              const a = map.get(c.candidateId) || 0; // デフォルト値は 0 を利用
+              map.set(c.candidateId, a);
+              availabilityMapMap.set(mapMapKey, map);
+            });
+          });
           console.log(availabilityMapMap); // TODO 除去する
 
           res.render('schedule', {
             user: req.user,
             schedule: schedule,
             candidates: candidates,
-            users: [req.user],
+            users: users,
             availabilityMapMap: availabilityMapMap
           });
             });
