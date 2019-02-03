@@ -6,6 +6,7 @@ const uuid = require('uuid');
 const Schedule = require('../models/schedule');
 const Candidate = require('../models/candidate');
 const User = require('../models/user');
+const Availability = require('../models/availability');
 
 router.get('/new', authenticationEnsurer, (req, res, next) => {
   res.render('new', { user: req.user });
@@ -52,11 +53,36 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
         where: { scheduleId: schedule.scheduleId },
         order: [['"candidateId"', 'ASC']]
       }).then((candidates) => {
-         res.render('schedule', {
-              user: req.user,
-              schedule: schedule,
-              candidates: candidates,
-              users: [req.user]
+// データベースからその予定の全ての出欠を取得する
+        Availability.findAll({
+          include: [
+            {
+              model: User,
+              attributes: ['userId','userProvider' ,'username']
+            }
+          ],
+          where: { scheduleId: schedule.scheduleId },
+          order: [[User, 'username', 'ASC'], ['"candidateId"', 'ASC']]
+        }).then((availabilities) => {
+          // 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
+          const availabilityMapMap = new Map(); // key: userId, value: Map(key: candidateId, availability)
+          availabilities.forEach((a) => {
+            //IdとProviderを連結させているが、数字+文字列で良いのだろうか？（うまく行ったけど）
+            const mapMapKey = a.user.userId + a.user.userProvider;
+            const map = availabilityMapMap.get(mapMapKey) || new Map();
+            map.set(a.candidateId, a.availability);
+            availabilityMapMap.set(mapMapKey, map);
+          });
+
+          console.log(availabilityMapMap); // TODO 除去する
+
+          res.render('schedule', {
+            user: req.user,
+            schedule: schedule,
+            candidates: candidates,
+            users: [req.user],
+            availabilityMapMap: availabilityMapMap
+          });
             });
       });
     } else {
