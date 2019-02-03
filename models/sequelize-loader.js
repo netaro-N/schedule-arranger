@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 const sequelize = new Sequelize(
   'postgres://postgres:postgres@localhost/schedule_arranger',
   {
-    logging: true,
+   // logging: true,
     operatorsAliases: false
   });
 
