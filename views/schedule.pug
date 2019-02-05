@@ -11,7 +11,7 @@ block content
     tr
       th 予定
       each user in users
-        th #{user.username}
+        th #{user.username},#{user.userId},#{user.userProvider}
     each candidate in candidates
       tr
         th #{candidate.candidateName}
@@ -21,6 +21,9 @@ block content
           - var availabilityLabels = ['欠', '？', '出'];
           td
             if user.isSelf
+              p ID : #{user.userId}
+              p pro : #{user.userProvider}
+              p mmkey : #{mapMapKey}
               button(
                 data-schedule-id=schedule.scheduleId
                 data-user-id=user.userId

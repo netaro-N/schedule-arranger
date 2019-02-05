@@ -24,6 +24,7 @@ router.post('/', authenticationEnsurer, (req, res, next) => {
     userProvider:req.user.provider,
     updatedAt: updatedAt
   }).then((schedule) => {
+
     const candidateNames = req.body.candidates.trim().split('\n').map((s) => s.trim()).filter((s) => s !== "");
     const candidates = candidateNames.map((c) => { return {
       candidateName: c,
@@ -33,7 +34,6 @@ router.post('/', authenticationEnsurer, (req, res, next) => {
           res.redirect('/schedules/' + schedule.scheduleId);
     });
   });
-  console.log(req.user);
 });
 
 router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
@@ -73,13 +73,12 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
             map.set(a.candidateId, a.availability);
             availabilityMapMap.set(mapMapKey, map);
           });
-
           // 閲覧ユーザーと出欠に紐づくユーザーからユーザー Map (キー:ユーザー ID+Provider, 値:ユーザー) を作る
           const userMap = new Map(); // key: userId+Provider, value: User
           userMap.set(parseInt(req.user.id)+req.user.provider, {
               isSelf: true,
               userId: parseInt(req.user.id),
-              userProvider: req.user.userProvider,
+              userProvider: req.user.provider,
               username: req.user.username
           });
           availabilities.forEach((a) => {
@@ -102,7 +101,6 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
               availabilityMapMap.set(mapMapKey, map);
             });
           });
-
           res.render('schedule', {
             user: req.user,
             schedule: schedule,

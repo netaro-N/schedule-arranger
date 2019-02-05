@@ -83,7 +83,7 @@ describe('/schedules', () => {
 
 });
 
-describe('/schedules/:scheduleId/users/:userId/:userProvider/candidates/:candidateId', () => {
+describe('/schedules/:scheduleId/users/:userId/users/:userProvider/candidates/:candidateId', () => {
   before(() => {
     passportStub.install(app);
     passportStub.login({ id: 0, provider: 'test', username: 'testuser' });
@@ -109,7 +109,7 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/candidates/:candida
             const userId = 0;
             const userProvider = 'test';
             request(app)
-              .post(`/schedules/${scheduleId}/users/${userId}/${userProvider}/candidates/${candidate.candidateId}`)
+              .post(`/schedules/${scheduleId}/users/${userId}/users/${userProvider}/candidates/${candidate.candidateId}`)
               .send({ availability: 2 }) // 出席に更新
               .expect('{"status":"OK","availability":2}')
               .end((err, res) => {
