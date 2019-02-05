@@ -101,7 +101,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').eac
     var scheduleId = button.data('schedule-id');
     var userId = button.data('user-id');
     var userProvider = button.data('user-provider');
-    console.log(userProvider);
     var candidateId = button.data('candidate-id');
     var availability = parseInt(button.data('availability'));
     var nextAvailability = (availability + 1) % 3;
