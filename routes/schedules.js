@@ -7,13 +7,14 @@ const Schedule = require('../models/schedule');
 const Candidate = require('../models/candidate');
 const User = require('../models/user');
 const Availability = require('../models/availability');
+const Comment = require('../models/comment');
 
 router.get('/new', authenticationEnsurer, (req, res, next) => {
   res.render('new', { user: req.user });
 });
 
 router.post('/', authenticationEnsurer, (req, res, next) => {
-// TODO 予定と候補を保存する実装をする
+  // TODO 予定と候補を保存する実装をする
   const scheduleId = uuid.v4();
   const updatedAt = new Date();
   Schedule.create({
@@ -21,17 +22,19 @@ router.post('/', authenticationEnsurer, (req, res, next) => {
     scheduleName: req.body.scheduleName.slice(0, 255),
     memo: req.body.memo,
     createdBy: req.user.id,
-    userProvider:req.user.provider,
+    userProvider: req.user.provider,
     updatedAt: updatedAt
   }).then((schedule) => {
 
     const candidateNames = req.body.candidates.trim().split('\n').map((s) => s.trim()).filter((s) => s !== "");
-    const candidates = candidateNames.map((c) => { return {
-      candidateName: c,
-      scheduleId: schedule.scheduleId
-    };});
+    const candidates = candidateNames.map((c) => {
+      return {
+        candidateName: c,
+        scheduleId: schedule.scheduleId
+      };
+    });
     Candidate.bulkCreate(candidates).then(() => {
-          res.redirect('/schedules/' + schedule.scheduleId);
+      res.redirect('/schedules/' + schedule.scheduleId);
     });
   });
 });
@@ -41,7 +44,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
     include: [
       {
         model: User,
-        attributes: ['userId','userProvider', 'username']
+        attributes: ['userId', 'userProvider', 'username']
       }],
     where: {
       scheduleId: req.params.scheduleId
@@ -53,12 +56,12 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
         where: { scheduleId: schedule.scheduleId },
         order: [['"candidateId"', 'ASC']]
       }).then((candidates) => {
-// データベースからその予定の全ての出欠を取得する
+        // データベースからその予定の全ての出欠を取得する
         Availability.findAll({
           include: [
             {
               model: User,
-              attributes: ['userId','userProvider' ,'username']
+              attributes: ['userId', 'userProvider', 'username']
             }
           ],
           where: { scheduleId: schedule.scheduleId },
@@ -75,17 +78,17 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           });
           // 閲覧ユーザーと出欠に紐づくユーザーからユーザー Map (キー:ユーザー ID+Provider, 値:ユーザー) を作る
           const userMap = new Map(); // key: userId+Provider, value: User
-          userMap.set(parseInt(req.user.id)+req.user.provider, {
-              isSelf: true,
-              userId: parseInt(req.user.id),
-              userProvider: req.user.provider,
-              username: req.user.username
+          userMap.set(parseInt(req.user.id) + req.user.provider, {
+            isSelf: true,
+            userId: parseInt(req.user.id),
+            userProvider: req.user.provider,
+            username: req.user.username
           });
           availabilities.forEach((a) => {
-            userMap.set(a.user.userId+a.user.userProvider, {
-              isSelf: parseInt(req.user.id)+req.user.provider === a.user.userId+a.user.userProvider, // 閲覧ユーザー自身であるかを含める
+            userMap.set(a.user.userId + a.user.userProvider, {
+              isSelf: parseInt(req.user.id) + req.user.provider === a.user.userId + a.user.userProvider, // 閲覧ユーザー自身であるかを含める
               userId: a.user.userId,
-              userProvider:a.user.userProvider,
+              userProvider: a.user.userProvider,
               username: a.user.username
             });
           });
@@ -94,21 +97,33 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           const users = Array.from(userMap).map((keyValue) => keyValue[1]);
           users.forEach((u) => {
             candidates.forEach((c) => {
-              const mapMapKey = u.userId+u.userProvider;
+              const mapMapKey = u.userId + u.userProvider;
               const map = availabilityMapMap.get(mapMapKey) || new Map();
               const a = map.get(c.candidateId) || 0; // デフォルト値は 0 を利用
               map.set(c.candidateId, a);
               availabilityMapMap.set(mapMapKey, map);
             });
           });
-          res.render('schedule', {
-            user: req.user,
-            schedule: schedule,
-            candidates: candidates,
-            users: users,
-            availabilityMapMap: availabilityMapMap
-          });
+
+          // コメント取得
+          Comment.findAll({
+            where: { scheduleId: schedule.scheduleId }
+          }).then((comments) => {
+            const commentMap = new Map();  // key: userId, value: comment
+            comments.forEach((comment) => {
+              const commentMapKey = comment.userId + comment.userProvider;
+              commentMap.set(commentMapKey, comment.comment);
             });
+            res.render('schedule', {
+              user: req.user,
+              schedule: schedule,
+              candidates: candidates,
+              users: users,
+              availabilityMapMap: availabilityMapMap,
+              commentMap: commentMap
+            });
+          });
+        });
       });
     } else {
       const err = new Error('指定された予定は見つかりません');
