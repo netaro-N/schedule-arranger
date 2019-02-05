@@ -6,6 +6,7 @@ const User = require('../models/user');
 const Schedule = require('../models/schedule');
 const Candidate = require('../models/candidate');
 const Availability = require('../models/availability');
+const Comment = require('../models/comment');
 const assert = require('assert');
 
 
@@ -127,7 +128,51 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/candidates/:candida
   });
 });
 
+describe('/schedules/:scheduleId/users/:userId/:userProvider/comments', () => {
+  before(() => {
+    passportStub.install(app);
+    passportStub.login({ id: 0, provider: 'test', username: 'testuser' });
+  });
+
+  after(() => {
+    passportStub.logout();
+    passportStub.uninstall(app);
+  });
+
+  it('コメントが更新できる', (done) => {
+    User.upsert({ userId: 0, userProvider:'test', username: 'testuser' }).then(() => {
+      request(app)
+        .post('/schedules')
+        .send({ scheduleName: 'テストコメント更新予定1', memo: 'テストコメント更新メモ1', candidates: 'テストコメント更新候補1' })
+        .end((err, res) => {
+          const createdSchedulePath = res.headers.location;
+          const scheduleId = createdSchedulePath.split('/schedules/')[1];
+          // 更新がされることをテスト
+          const userId = 0;
+          const userProvider = 'test';
+          request(app)
+            .post(`/schedules/${scheduleId}/users/${userId}/${userProvider}/comments`)
+            .send({ comment: 'testcomment' })
+            .expect('{"status":"OK","comment":"testcomment"}')
+            .end((err, res) => {
+              Comment.findAll({
+                where: { scheduleId: scheduleId }
+              }).then((comments) => {
+                assert.equal(comments.length, 1);
+                assert.equal(comments[0].comment, 'testcomment');
+                deleteScheduleAggregate(scheduleId, done, err);
+              });
+            });
+        });
+    });
+  });
+});
+
 function deleteScheduleAggregate(scheduleId, done, err) {
+  const promiseCommentDestroy = Comment.findAll({
+    where: { scheduleId: scheduleId }
+  }).then((comments) => { comments.map((c) => { return c.destroy(); });});
+
   Availability.findAll({
     where: { scheduleId: scheduleId }
   }).then((availabilities) => {
