@@ -104,7 +104,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').eac
     var candidateId = button.data('candidate-id');
     var availability = parseInt(button.data('availability'));
     var nextAvailability = (availability + 1) % 3;
-    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post("/schedules/".concat(scheduleId, "/users/").concat(userId, "/users/").concat(userProvider, "/candidates/").concat(candidateId), {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post("/schedules/".concat(scheduleId, "/users/").concat(userId, "/").concat(userProvider, "/candidates/").concat(candidateId), {
       availability: nextAvailability
     }, function (data) {
       button.data('availability', data.availability);

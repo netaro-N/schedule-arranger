@@ -10,7 +10,7 @@ $('.availability-toggle-button').each((i, e) => {
     const candidateId = button.data('candidate-id');
     const availability = parseInt(button.data('availability'));
     const nextAvailability = (availability + 1) % 3;
-    $.post(`/schedules/${scheduleId}/users/${userId}/users/${userProvider}/candidates/${candidateId}`,
+    $.post(`/schedules/${scheduleId}/users/${userId}/${userProvider}/candidates/${candidateId}`,
       { availability: nextAvailability },
       (data) => {
         button.data('availability', data.availability);
