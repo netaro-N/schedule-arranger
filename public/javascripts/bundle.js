@@ -113,6 +113,21 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').eac
     });
   });
 });
+var buttonSelfComment = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#self-comment-button');
+buttonSelfComment.click(function () {
+  var scheduleId = buttonSelfComment.data('schedule-id');
+  var userId = buttonSelfComment.data('user-id');
+  var userProvider = buttonSelfComment.data('user-provider');
+  var comment = prompt('コメントを255文字以内で入力してください。');
+
+  if (comment) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post("/schedules/".concat(scheduleId, "/users/").concat(userId, "/").concat(userProvider, "/comments"), {
+      comment: comment
+    }, function (data) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#self-comment').text(data.comment);
+    });
+  }
+});
 
 /***/ }),
 /* 1 */
