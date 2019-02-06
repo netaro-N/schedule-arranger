@@ -40,6 +40,8 @@ router.post('/', authenticationEnsurer, (req, res, next) => {
 });
 
 router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
+  let storedSchedule = null;
+  let storedCandidates = null;
   Schedule.findOne({
     include: [
       {
@@ -52,20 +54,29 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
     order: [['"updatedAt"', 'DESC']]
   }).then((schedule) => {
     if (schedule) {
-      Candidate.findAll({
+      storedSchedule = schedule;
+      return Candidate.findAll({
         where: { scheduleId: schedule.scheduleId },
         order: [['"candidateId"', 'ASC']]
-      }).then((candidates) => {
+      });
+    } else{
+      const err = new Error('指定された予定は見つかりません');
+      err.status = 404;
+      next(err);
+    }
+  }).then((candidates) => {
         // データベースからその予定の全ての出欠を取得する
-        Availability.findAll({
+        storedCandidates = candidates;
+        return Availability.findAll({
           include: [
             {
               model: User,
               attributes: ['userId', 'userProvider', 'username']
             }
           ],
-          where: { scheduleId: schedule.scheduleId },
+          where: { scheduleId: storedSchedule.scheduleId },
           order: [[User, 'username', 'ASC'], ['"candidateId"', 'ASC']]
+        });
         }).then((availabilities) => {
           // 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
           const availabilityMapMap = new Map(); // key: userId, value: Map(key: candidateId, availability)
@@ -76,6 +87,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
             map.set(a.candidateId, a.availability);
             availabilityMapMap.set(mapMapKey, map);
           });
+
           // 閲覧ユーザーと出欠に紐づくユーザーからユーザー Map (キー:ユーザー ID+Provider, 値:ユーザー) を作る
           const userMap = new Map(); // key: userId+Provider, value: User
           userMap.set(parseInt(req.user.id) + req.user.provider, {
@@ -96,7 +108,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           // 全ユーザー、全候補で二重ループしてそれぞれの出欠の値がない場合には、「欠席」を設定する
           const users = Array.from(userMap).map((keyValue) => keyValue[1]);
           users.forEach((u) => {
-            candidates.forEach((c) => {
+            storedCandidates.forEach((c) => {
               const mapMapKey = u.userId + u.userProvider;
               const map = availabilityMapMap.get(mapMapKey) || new Map();
               const a = map.get(c.candidateId) || 0; // デフォルト値は 0 を利用
@@ -106,8 +118,8 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           });
 
           // コメント取得
-          Comment.findAll({
-            where: { scheduleId: schedule.scheduleId }
+          return Comment.findAll({
+            where: { scheduleId: storedSchedule.scheduleId }
           }).then((comments) => {
             const commentMap = new Map();  // key: userId, value: comment
             comments.forEach((comment) => {
@@ -116,8 +128,8 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
             });
             res.render('schedule', {
               user: req.user,
-              schedule: schedule,
-              candidates: candidates,
+              schedule: storedSchedule,
+              candidates: storedCandidates,
               users: users,
               availabilityMapMap: availabilityMapMap,
               commentMap: commentMap
@@ -125,12 +137,6 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           });
         });
       });
-    } else {
-      const err = new Error('指定された予定は見つかりません');
-      err.status = 404;
-      next(err);
-    }
-  });
-});
+
 
 module.exports = router;
