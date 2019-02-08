@@ -6,6 +6,10 @@ block content
   p 作成者: #{schedule.user.username}
   p 作成者ID: #{schedule.user.userId}
   p 作成者プロバイダー: #{schedule.user.userProvider}
+  - var isMine = (parseInt(user.id) === schedule.user.userId && user.provider === schedule.user.userProvider)
+  if isMine
+    div
+      a(href=`/schedules/${schedule.scheduleId}/edit`) この予定を編集する
   h3 出欠表
   table
     tr
