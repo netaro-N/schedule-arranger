@@ -80,15 +80,15 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
 
           // 閲覧ユーザーと出欠に紐づくユーザーからユーザー Map (キー:ユーザー ID+Provider, 値:ユーザー) を作る
           const userMap = new Map(); // key: userId+Provider, value: User
-          userMap.set(parseInt(req.user.id) + req.user.provider, {
+          userMap.set(req.user.id + req.user.provider, {
             isSelf: true,
-            userId: parseInt(req.user.id),
+            userId: req.user.id,
             userProvider: req.user.provider,
             username: req.user.username
           });
           availabilities.forEach((a) => {
             userMap.set(a.user.userId + a.user.userProvider, {
-              isSelf: parseInt(req.user.id) + req.user.provider === a.user.userId + a.user.userProvider, // 閲覧ユーザー自身であるかを含める
+              isSelf: req.user.id + req.user.provider === a.user.userId + a.user.userProvider, // 閲覧ユーザー自身であるかを含める
               userId: a.user.userId,
               userProvider: a.user.userProvider,
               username: a.user.username
@@ -154,7 +154,7 @@ router.get('/:scheduleId/edit', authenticationEnsurer, (req, res, next) => {
 });
 
 function isMine(req, schedule) {
-  return schedule && parseInt(schedule.createdBy) === parseInt(req.user.id) && schedule.userProvider === req.user.provider;
+  return schedule && schedule.createdBy === req.user.id && schedule.userProvider === req.user.provider;
 }
 
 router.post('/:scheduleId', authenticationEnsurer, (req, res, next) => {
