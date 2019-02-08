@@ -25,17 +25,7 @@ router.post('/', authenticationEnsurer, (req, res, next) => {
     userProvider: req.user.provider,
     updatedAt: updatedAt
   }).then((schedule) => {
-
-    const candidateNames = req.body.candidates.trim().split('\n').map((s) => s.trim()).filter((s) => s !== "");
-    const candidates = candidateNames.map((c) => {
-      return {
-        candidateName: c,
-        scheduleId: schedule.scheduleId
-      };
-    });
-    Candidate.bulkCreate(candidates).then(() => {
-      res.redirect('/schedules/' + schedule.scheduleId);
-    });
+    createCandidatesAndRedirect(parseCandidateNames(req), scheduleId, res);
   });
 });
 
@@ -166,5 +156,65 @@ router.get('/:scheduleId/edit', authenticationEnsurer, (req, res, next) => {
 function isMine(req, schedule) {
   return schedule && parseInt(schedule.createdBy) === parseInt(req.user.id) && schedule.userProvider === req.user.provider;
 }
+
+router.post('/:scheduleId', authenticationEnsurer, (req, res, next) => {
+  Schedule.findOne({
+    where: {
+      scheduleId: req.params.scheduleId
+    }
+  }).then((schedule) => {
+    if (schedule && isMine(req, schedule)) {
+      if (parseInt(req.query.edit) === 1) {
+        const updatedAt = new Date();
+        schedule.update({
+          scheduleId: schedule.scheduleId,
+          scheduleName: req.body.scheduleName.slice(0, 255),
+          memo: req.body.memo,
+          createdBy: req.user.id,
+          userProvider: req.user.provider,
+          updatedAt: updatedAt
+        }).then((schedule) => {
+          Candidate.findAll({
+            where: { scheduleId: schedule.scheduleId },
+            order: [['"candidateId"', 'ASC']]
+          }).then((candidates) => {
+            // 追加されているかチェック
+            const candidateNames = parseCandidateNames(req);
+            if (candidateNames) {
+              createCandidatesAndRedirect(candidateNames, schedule.scheduleId, res);
+            } else {
+              res.redirect('/schedules/' + schedule.scheduleId);
+            }
+          });
+        });
+      } else {
+        const err = new Error('不正なリクエストです');
+        err.status = 400;
+        next(err);
+      }
+    } else {
+      const err = new Error('指定された予定がない、または、編集する権限がありません');
+      err.status = 404;
+      next(err);
+    }
+  });
+});
+
+function createCandidatesAndRedirect(candidateNames, scheduleId, res) {
+  const candidates = candidateNames.map((c) => {
+    return {
+      candidateName: c,
+      scheduleId: scheduleId
+    };
+  });
+  Candidate.bulkCreate(candidates).then(() => {
+    res.redirect('/schedules/' + scheduleId);
+  });
+}
+
+function parseCandidateNames(req) {
+  return req.body.candidates.trim().split('\n').map((s) => s.trim()).filter((s) => s !== "");
+}
+
 
 module.exports = router;
