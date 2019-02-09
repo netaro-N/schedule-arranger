@@ -115,6 +115,9 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').eac
       button.data('availability', data.availability);
       var availabilityLabels = ['欠', '？', '出'];
       button.text(availabilityLabels[data.availability]);
+      var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success'];
+      button.removeClass('btn-danger btn-secondary btn-success');
+      button.addClass(buttonStyles[data.availability]);
     });
   });
 });
