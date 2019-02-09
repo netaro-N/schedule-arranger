@@ -1,9 +1,6 @@
 extends layout
 
 block content
-  a(href="/auth/github") GitHubでログイン
+  a(href="/auth/github").btn.btn-info.my-3 GitHubでログイン
   p
-    a(href="/auth/twitter") Twitterでログイン
-  if user
-    p 現在 #{user.username} でログイン中
-    p 使用プロバイダーは #{user.provider}です
+    a(href="/auth/twitter").btn.btn-info.my-3 Twitterでログイン

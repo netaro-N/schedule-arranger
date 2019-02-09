@@ -1,24 +1,23 @@
 extends layout
 
 block content
-  p #{user.id}
-  p #{parseInt(user.id)}
-  p #{schedule.user.userId}
-  - var isMine = user.id === schedule.user.userId
+  div.card.my-3
+    div.card-header
+      h4 #{schedule.scheduleName}
+    div.card-body
+      p(style="white-space:pre;") #{schedule.memo}
+    div.card-footer
+      p 作成者: #{schedule.user.username}
+  - var isMine = (user.id === schedule.user.userId)&&(user.provider === schedule.user.userProvider)
   if isMine
     div
-      a(href=`/schedules/${schedule.scheduleId}/edit`) この予定を編集する
-  h4 #{schedule.scheduleName}
-  p(style="white-space:pre;") #{schedule.memo}
-  p 作成者: #{schedule.user.username}
-  p 作成者ID: #{schedule.user.userId}
-  p 作成者プロバイダー: #{schedule.user.userProvider}
-  h3 出欠表
-  table
+      a(href=`/schedules/${schedule.scheduleId}/edit`).btn.btn-info この予定を編集する
+  h3.my-3 出欠表
+  table.table.table-bordered
     tr
       th 予定
       each user in users
-        th #{user.username},#{user.userId},#{user.userProvider}
+        th
     each candidate in candidates
       tr
         th #{candidate.candidateName}
@@ -26,30 +25,30 @@ block content
           - var mapMapKey = user.userId+user.userProvider
           - var availability = availabilityMapMap.get(mapMapKey).get(candidate.candidateId)
           - var availabilityLabels = ['欠', '？', '出'];
+          - var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success'];
           td
             if user.isSelf
-              p ID : #{user.userId}
-              p pro : #{user.userProvider}
-              p mmkey : #{mapMapKey}
-              button(
+              button(class=`availability-toggle-button btn-lg ${buttonStyles[availability]}`
                 data-schedule-id=schedule.scheduleId
                 data-user-id=user.userId
                 data-user-provider=user.userProvider
                 data-candidate-id=candidate.candidateId
-                data-availability=availability).availability-toggle-button #{availabilityLabels[availability]}
+                data-availability=availability) #{availabilityLabels[availability]}
             else
-              p #{availabilityLabels[availability]}
+              h3 #{availabilityLabels[availability]}
     tr
       th コメント
       each user in users
         - var commentMapKey = user.userId + user.userProvider;
         if user.isSelf
           td
-            p#self-comment #{commentMap.get(commentMapKey)}
+            p
+              small#self-comment #{commentMap.get(commentMapKey)}
             button(
               data-schedule-id=schedule.scheduleId
               data-user-id=user.userId
-              data-user-provider=user.userProvider)#self-comment-button 編集
+              data-user-provider=user.userProvider)#self-comment-button.btn-xs.btn-info 編集
         else
           td
-            p #{commentMap.get(commentMapKey)}
+            p
+              small #{commentMap.get(commentMapKey)}
