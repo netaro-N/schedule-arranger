@@ -30,8 +30,8 @@ User.sync().then(() => {
 
 // GitHub認証の準備
 var GitHubStrategy = require('passport-github2').Strategy;
-var GITHUB_CLIENT_ID = '46ac5ebb34b36b63bc8a';
-var GITHUB_CLIENT_SECRET = '72eb624764351a6e729126ba56178d9cd21959c1';
+var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID || '46ac5ebb34b36b63bc8a';
+var GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || '72eb624764351a6e729126ba56178d9cd21959c1';
 
 // Twitter認証の準備
 var TwitterStrategy = require('passport-twitter').Strategy;
@@ -51,7 +51,7 @@ passport.use(new GitHubStrategy({
   clientID: GITHUB_CLIENT_ID,
   clientSecret: GITHUB_CLIENT_SECRET,
   // 設定URLを「localhost → example.net」にしてあります。「GitHub登録」と「hostsファイル」の設定も変更しましょう
-  callbackURL: 'http://example.net:8000/auth/github/callback'
+  callbackURL: process.env.HEROKU_URL ? process.env.HEROKU_URL + 'auth/github/callback' :'http://example.net:8000/auth/github/callback'
 },
   // GitHub認証後の処理
   function (accessToken, refreshToken, profile, done) {
