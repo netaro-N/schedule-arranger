@@ -71,7 +71,7 @@ passport.use(new GitHubStrategy({
 passport.use(new TwitterStrategy({
   consumerKey: TWITTER_CONSUMER_KEY,
   consumerSecret: TWITTER_CONSUMER_SECRET,
-  callbackURL: process.env.HEROKU_URL ? process.env.HEROKU_URL + 'auth/github/callback' :"http://example.net:8000/auth/twitter/callback"
+  callbackURL: process.env.HEROKU_URL ? process.env.HEROKU_URL + 'auth/twitter/callback' :"http://example.net:8000/auth/twitter/callback"
 },
 // 認証後アクション
 function (accessToken, refreshToken, profile, done) {
