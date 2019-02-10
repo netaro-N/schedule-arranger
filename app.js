@@ -35,8 +35,8 @@ var GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || '72eb624764351a6e
 
 // Twitter認証の準備
 var TwitterStrategy = require('passport-twitter').Strategy;
-var TWITTER_CONSUMER_KEY = '423xwwllAG9kpDgZGPjwRDomY';
-var TWITTER_CONSUMER_SECRET = 'tt85xQ1uf1fMO1tWnhDeRElFbErXh7R20Rwbze3JXk4vfmB0VV';
+var TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY || '423xwwllAG9kpDgZGPjwRDomY';
+var TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET || 'tt85xQ1uf1fMO1tWnhDeRElFbErXh7R20Rwbze3JXk4vfmB0VV';
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -71,7 +71,7 @@ passport.use(new GitHubStrategy({
 passport.use(new TwitterStrategy({
   consumerKey: TWITTER_CONSUMER_KEY,
   consumerSecret: TWITTER_CONSUMER_SECRET,
-  callbackURL: "http://example.net:8000/auth/twitter/callback"
+  callbackURL: process.env.HEROKU_URL ? process.env.HEROKU_URL + 'auth/github/callback' :"http://example.net:8000/auth/twitter/callback"
 },
 // 認証後アクション
 function (accessToken, refreshToken, profile, done) {
