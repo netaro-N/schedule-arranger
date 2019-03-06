@@ -30,13 +30,13 @@ User.sync().then(() => {
 
 // GitHub認証の準備
 var GitHubStrategy = require('passport-github2').Strategy;
-var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID || '46ac5ebb34b36b63bc8a';
-var GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || '72eb624764351a6e729126ba56178d9cd21959c1';
+var GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID //|| '46ac5ebb34b36b63bc8a';
+var GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET //|| '72eb624764351a6e729126ba56178d9cd21959c1';
 
 // Twitter認証の準備
 var TwitterStrategy = require('passport-twitter').Strategy;
-var TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY || '423xwwllAG9kpDgZGPjwRDomY';
-var TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET || 'tt85xQ1uf1fMO1tWnhDeRElFbErXh7R20Rwbze3JXk4vfmB0VV';
+var TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY //|| '423xwwllAG9kpDgZGPjwRDomY';
+var TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET //|| 'tt85xQ1uf1fMO1tWnhDeRElFbErXh7R20Rwbze3JXk4vfmB0VV';
 
 passport.serializeUser(function (user, done) {
   done(null, user);
