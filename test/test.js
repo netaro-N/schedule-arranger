@@ -32,7 +32,7 @@ describe('/login', () => {
 
   it('ログイン時はユーザー名が表示される', (done) => {
     request(app)
-      .get('/login')
+      .get('/')
       .expect(/testuser/)
       .expect(200, done);
   });
@@ -62,27 +62,34 @@ describe('/schedules', () => {
   it('予定が作成でき、表示される', (done) => {
     User.upsert({ userId: 0, userProvider: 'test', username: 'testuser' }).then(() => {
       request(app)
-        .post('/schedules')
-        .send({ scheduleName: 'テスト予定1', memo: 'テストメモ1\r\nテストメモ2', candidates: 'テスト候補1\r\nテスト候補2\r\nテスト候補3' })
-        .expect('Location', /schedules/)
-        .expect(302)
+        .get('/schedules/new')
         .end((err, res) => {
-          const createdSchedulePath = res.headers.location;
+          const match = res.text.match(/<input type="hidden" name="_csrf" value="(.*?)">/);
+          const csrf = match[1];
+
           request(app)
-            .get(createdSchedulePath)
-            // TODO 作成された予定と候補が表示されていることをテストする
-            .expect(/テスト予定1/)
-            .expect(/テストメモ1/)
-            .expect(/テストメモ2/)
-            .expect(/テスト候補1/)
-            .expect(/テスト候補2/)
-            .expect(/テスト候補3/)
-            .expect(200)
-            .end((err, res) => { deleteScheduleAggregate(createdSchedulePath.split('/schedules/')[1], done, err); });
+            .post('/schedules')
+            .set('cookie', res.headers['set-cookie'])
+            .send({ scheduleName: 'テスト予定1', memo: 'テストメモ1\r\nテストメモ2', candidates: 'テスト候補1\r\nテスト候補2\r\nテスト候補3', _csrf: csrf })
+            .expect('Location', /schedules/)
+            .expect(302)
+            .end((err, res) => {
+              const createdSchedulePath = res.headers.location;
+              request(app)
+                .get(createdSchedulePath)
+                // TODO 作成された予定と候補が表示されていることをテストする
+                .expect(/テスト予定1/)
+                .expect(/テストメモ1/)
+                .expect(/テストメモ2/)
+                .expect(/テスト候補1/)
+                .expect(/テスト候補2/)
+                .expect(/テスト候補3/)
+                .expect(200)
+                .end((err, res) => { deleteScheduleAggregate(createdSchedulePath.split('/schedules/')[1], done, err); });
+            });
         });
     });
   });
-
 });
 
 describe('/schedules/:scheduleId/users/:userId/:userProvider/candidates/:candidateId', () => {
@@ -99,31 +106,39 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/candidates/:candida
   it('出欠が更新できる', (done) => {
     User.upsert({ userId: 0, userProvider: 'test', username: 'testuser' }).then(() => {
       request(app)
-        .post('/schedules')
-        .send({ scheduleName: 'テスト出欠更新予定1', memo: 'テスト出欠更新メモ1', candidates: 'テスト出欠更新候補1' })
+        .get('/schedules/new')
         .end((err, res) => {
-          const createdSchedulePath = res.headers.location;
-          const scheduleId = createdSchedulePath.split('/schedules/')[1];
-          Candidate.findOne({
-            where: { scheduleId: scheduleId }
-          }).then((candidate) => {
-            // 更新がされることをテスト
-            const userId = 0;
-            const userProvider = 'test';
-            request(app)
-              .post(`/schedules/${scheduleId}/users/${userId}/${userProvider}/candidates/${candidate.candidateId}`)
-              .send({ availability: 2 }) // 出席に更新
-              .expect('{"status":"OK","availability":2}')
-              .end((err, res) => {
-                Availability.findAll({
-                  where: { scheduleId: scheduleId }
-                }).then((availabilities) => {
-                  assert.equal(availabilities.length, 1);
-                  assert.equal(availabilities[0].availability, 2);
-                  deleteScheduleAggregate(scheduleId, done, err);
-                });
+          const match = res.text.match(/<input type="hidden" name="_csrf" value="(.*?)">/);
+          const csrf = match[1];
+
+          request(app)
+            .post('/schedules')
+            .set('cookie', res.headers['set-cookie'])
+            .send({ scheduleName: 'テスト出欠更新予定1', memo: 'テスト出欠更新メモ1', candidates: 'テスト出欠更新候補1', _csrf: csrf })
+            .end((err, res) => {
+              const createdSchedulePath = res.headers.location;
+              const scheduleId = createdSchedulePath.split('/schedules/')[1];
+              Candidate.findOne({
+                where: { scheduleId: scheduleId }
+              }).then((candidate) => {
+                // 更新がされることをテスト
+                const userId = 0;
+                const userProvider = 'test';
+                request(app)
+                  .post(`/schedules/${scheduleId}/users/${userId}/${userProvider}/candidates/${candidate.candidateId}`)
+                  .send({ availability: 2 }) // 出席に更新
+                  .expect('{"status":"OK","availability":2}')
+                  .end((err, res) => {
+                    Availability.findAll({
+                      where: { scheduleId: scheduleId }
+                    }).then((availabilities) => {
+                      assert.equal(availabilities.length, 1);
+                      assert.equal(availabilities[0].availability, 2);
+                      deleteScheduleAggregate(scheduleId, done, err);
+                    });
+                  });
               });
-          });
+            });
         });
     });
   });
@@ -143,8 +158,15 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/comments', () => {
   it('コメントが更新できる', (done) => {
     User.upsert({ userId: 0, userProvider: 'test', username: 'testuser' }).then(() => {
       request(app)
+        .get('/schedules/new')
+        .end((err, res) => {
+          const match = res.text.match(/<input type="hidden" name="_csrf" value="(.*?)">/);
+          const csrf = match[1];
+
+      request(app)
         .post('/schedules')
-        .send({ scheduleName: 'テストコメント更新予定1', memo: 'テストコメント更新メモ1', candidates: 'テストコメント更新候補1' })
+        .set('cookie', res.headers['set-cookie'])
+        .send({ scheduleName: 'テストコメント更新予定1', memo: 'テストコメント更新メモ1', candidates: 'テストコメント更新候補1', _csrf: csrf })
         .end((err, res) => {
           const createdSchedulePath = res.headers.location;
           const scheduleId = createdSchedulePath.split('/schedules/')[1];
@@ -165,6 +187,7 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/comments', () => {
               });
             });
         });
+      });
     });
   });
 });
@@ -172,7 +195,7 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/comments', () => {
 describe('/schedules/:scheduleId?edit=1', () => {
   before(() => {
     passportStub.install(app);
-    passportStub.login({ id: '0', provider:'test', username: 'testuser' });
+    passportStub.login({ id: '0', provider: 'test', username: 'testuser' });
   });
 
   after(() => {
@@ -183,15 +206,23 @@ describe('/schedules/:scheduleId?edit=1', () => {
   it('予定が更新でき、候補が追加できる', (done) => {
     User.upsert({ userId: '0', userProvider: 'test', username: 'testuser' }).then(() => {
       request(app)
+        .get('/schedules/new')
+        .end((err, res) => {
+          const match = res.text.match(/<input type="hidden" name="_csrf" value="(.*?)">/);
+          const csrf = match[1];
+          const setCookie = res.headers['set-cookie'];
+      request(app)
         .post('/schedules')
-        .send({ scheduleName: 'テスト更新予定1', memo: 'テスト更新メモ1', candidates: 'テスト更新候補1' })
+        .set('cookie', setCookie)
+        .send({ scheduleName: 'テスト更新予定1', memo: 'テスト更新メモ1', candidates: 'テスト更新候補1' , _csrf: csrf})
         .end((err, res) => {
           const createdSchedulePath = res.headers.location;
           const scheduleId = createdSchedulePath.split('/schedules/')[1];
           // 更新がされることをテスト
           request(app)
             .post(`/schedules/${scheduleId}?edit=1`)
-            .send({ scheduleName: 'テスト更新予定2', memo: 'テスト更新メモ2', candidates: 'テスト更新候補2' })
+            .set('cookie', setCookie)
+            .send({ scheduleName: 'テスト更新予定2', memo: 'テスト更新メモ2', candidates: 'テスト更新候補2', _csrf: csrf })
             .end((err, res) => {
               Schedule.findByPk(scheduleId).then((s) => {
                 assert.equal(s.scheduleName, 'テスト更新予定2');
@@ -208,6 +239,7 @@ describe('/schedules/:scheduleId?edit=1', () => {
               });
             });
         });
+      });
     });
   });
 });
@@ -215,7 +247,7 @@ describe('/schedules/:scheduleId?edit=1', () => {
 describe('/schedules/:scheduleId?delete=1', () => {
   before(() => {
     passportStub.install(app);
-    passportStub.login({ id: '0',provider:'test', username: 'testuser' });
+    passportStub.login({ id: '0', provider: 'test', username: 'testuser' });
   });
 
   after(() => {
@@ -224,10 +256,18 @@ describe('/schedules/:scheduleId?delete=1', () => {
   });
 
   it('予定に関連する全ての情報が削除できる', (done) => {
-    User.upsert({ userId: '0',userProvider:'test', username: 'testuser' }).then(() => {
+    User.upsert({ userId: '0', userProvider: 'test', username: 'testuser' }).then(() => {
+      request(app)
+        .get('/schedules/new')
+        .end((err, res) => {
+          const match = res.text.match(/<input type="hidden" name="_csrf" value="(.*?)">/);
+          const csrf = match[1];
+          const setCookie = res.headers['set-cookie'];
+
       request(app)
         .post('/schedules')
-        .send({ scheduleName: 'テスト更新予定1', memo: 'テスト更新メモ1', candidates: 'テスト更新候補1' })
+        .set('cookie', setCookie)
+        .send({ scheduleName: 'テスト更新予定1', memo: 'テスト更新メモ1', candidates: 'テスト更新候補1', _csrf: csrf  })
         .end((err, res) => {
           const createdSchedulePath = res.headers.location;
           const scheduleId = createdSchedulePath.split('/schedules/')[1];
@@ -241,6 +281,7 @@ describe('/schedules/:scheduleId?delete=1', () => {
               const userProvider = 'test';
               request(app)
                 .post(`/schedules/${scheduleId}/users/${userId}/${userProvider}/candidates/${candidate.candidateId}`)
+                .set('cookie', setCookie)
                 .send({ availability: 2 }) // 出席に更新
                 .end((err, res) => {
                   if (err) done(err);
@@ -255,6 +296,7 @@ describe('/schedules/:scheduleId?delete=1', () => {
             const userProvider = 'test';
             request(app)
               .post(`/schedules/${scheduleId}/users/${userId}/${userProvider}/comments`)
+              .set('cookie', setCookie)
               .send({ comment: 'testcomment' })
               .expect('{"status":"OK","comment":"testcomment"}')
               .end((err, res) => {
@@ -268,6 +310,8 @@ describe('/schedules/:scheduleId?delete=1', () => {
             return new Promise((resolve) => {
               request(app)
                 .post(`/schedules/${scheduleId}?delete=1`)
+                .set('cookie', setCookie)
+                .send({ _csrf: csrf })
                 .end((err, res) => {
                   if (err) done(err);
                   resolve();
@@ -301,6 +345,7 @@ describe('/schedules/:scheduleId?delete=1', () => {
             });
           });
         });
+      });
     });
   });
 });
