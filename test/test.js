@@ -60,7 +60,7 @@ describe('/schedules', () => {
   });
 
   it('予定が作成でき、表示される', (done) => {
-    User.upsert({ userId: 0, userProvider: 'test', username: 'testuser' }).then(() => {
+    User.upsert({ userId: '0', userProvider: 'test', username: 'testuser' }).then(() => {
       request(app)
         .get('/schedules/new')
         .end((err, res) => {
@@ -104,7 +104,7 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/candidates/:candida
   });
 
   it('出欠が更新できる', (done) => {
-    User.upsert({ userId: 0, userProvider: 'test', username: 'testuser' }).then(() => {
+    User.upsert({ userId: '0', userProvider: 'test', username: 'testuser' }).then(() => {
       request(app)
         .get('/schedules/new')
         .end((err, res) => {
@@ -122,7 +122,7 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/candidates/:candida
                 where: { scheduleId: scheduleId }
               }).then((candidate) => {
                 // 更新がされることをテスト
-                const userId = 0;
+                const userId = '0';
                 const userProvider = 'test';
                 request(app)
                   .post(`/schedules/${scheduleId}/users/${userId}/${userProvider}/candidates/${candidate.candidateId}`)
@@ -156,7 +156,7 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/comments', () => {
   });
 
   it('コメントが更新できる', (done) => {
-    User.upsert({ userId: 0, userProvider: 'test', username: 'testuser' }).then(() => {
+    User.upsert({ userId: '0', userProvider: 'test', username: 'testuser' }).then(() => {
       request(app)
         .get('/schedules/new')
         .end((err, res) => {
@@ -171,7 +171,7 @@ describe('/schedules/:scheduleId/users/:userId/:userProvider/comments', () => {
           const createdSchedulePath = res.headers.location;
           const scheduleId = createdSchedulePath.split('/schedules/')[1];
           // 更新がされることをテスト
-          const userId = 0;
+          const userId = '0';
           const userProvider = 'test';
           request(app)
             .post(`/schedules/${scheduleId}/users/${userId}/${userProvider}/comments`)
