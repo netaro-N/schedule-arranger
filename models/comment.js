@@ -9,7 +9,7 @@ const Comment = loader.database.define('comments', {
     allowNull: false
   },
   userId: {
-    type: Sequelize.BIGINT,
+    type: Sequelize.STRING,
     primaryKey: true,
     allowNull: false
   },

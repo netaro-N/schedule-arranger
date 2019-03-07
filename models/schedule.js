@@ -17,7 +17,7 @@ const Schedule = loader.database.define('schedules', {
     allowNull: false
   },
   createdBy: {
-    type: Sequelize.BIGINT,
+    type: Sequelize.STRING,
     allowNull: false
   },
   userProvider: {
