@@ -6,8 +6,6 @@ var logger = require('morgan');
 var helmet = require('helmet');
 var session = require('express-session');
 var passport = require('passport');
-
-
 // モデルの読み込み
 var User = require('./models/user');
 var Schedule = require('./models/schedule');
