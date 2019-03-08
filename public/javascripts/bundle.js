@@ -104,6 +104,14 @@ global.jQuery = jquery__WEBPACK_IMPORTED_MODULE_0___default.a;
 __webpack_require__(5);
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()("#applyForm").validate({
+  errorClass: 'error',
+  errorElement: 'span',
+  highlight: function highlight(element, errorClass, validClass) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(element).parents("div[class='form-group']").addClass(errorClass);
+  },
+  unhighlight: function unhighlight(element, errorClass, validClass) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(element).parents(".error").removeClass(errorClass);
+  },
   rules: {
     scheduleName: {
       required: true
@@ -114,8 +122,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#applyForm").validate({
       required: "予定名を記入してください"
     }
   }
-});
-jquery__WEBPACK_IMPORTED_MODULE_0___default()("input:blank").css("background-color", "red");
+}); //$("input:blank").css("background-color", "red");
+
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').each(function (i, e) {
   var button = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e);
   button.click(function () {
