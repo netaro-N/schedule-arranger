@@ -9,10 +9,10 @@ $("#applyForm").validate({
   errorClass:'error',
     errorElement:'span',
     highlight: function (element, errorClass, validClass) { 
-        $(element).addClass(errorClass).css("background-color", "red"); 
+        $(element).addClass(errorClass).css({"background-color":"crimson","color":"white"}); 
     }, 
     unhighlight: function (element, errorClass, validClass) { 
-        $(element).removeClass(errorClass); 
+        $(element).removeClass(errorClass).css({"background-color":"floralwhite","color":"initial"}); 
     },
   rules: {
     scheduleName: {
