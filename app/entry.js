@@ -6,6 +6,14 @@ import bootstrap from 'bootstrap';
 // jquery-validation
 require('jquery-validation');
 $("#applyForm").validate({
+  errorClass:'error',
+    errorElement:'span',
+    highlight: function (element, errorClass, validClass) { 
+        $(element).parents("div[class='form-group']").addClass(errorClass); 
+    }, 
+    unhighlight: function (element, errorClass, validClass) { 
+        $(element).parents(".error").removeClass(errorClass); 
+    },
   rules: {
     scheduleName: {
       required: true
@@ -17,7 +25,7 @@ $("#applyForm").validate({
     }
   }
 });
-$("input:blank").css("background-color", "red");
+//$("input:blank").css("background-color", "red");
 
 $('.availability-toggle-button').each((i, e) => {
   const button = $(e);
