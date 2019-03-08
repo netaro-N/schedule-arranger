@@ -107,10 +107,10 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#applyForm").validate({
   errorClass: 'error',
   errorElement: 'span',
   highlight: function highlight(element, errorClass, validClass) {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(element).parents("div[class='form-control']").addClass(errorClass).css("background-color", "red");
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(element).addClass(errorClass).css("background-color", "red");
   },
   unhighlight: function unhighlight(element, errorClass, validClass) {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(element).parents(".error").removeClass(errorClass);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(element).removeClass(errorClass);
   },
   rules: {
     scheduleName: {
