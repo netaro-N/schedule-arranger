@@ -9,7 +9,7 @@ $("#applyForm").validate({
   errorClass:'error',
     errorElement:'span',
     highlight: function (element, errorClass, validClass) { 
-        $(element).parents("div[class='form-group']").addClass(errorClass).css("background-color", "red"); 
+        $(element).parents("div[class='form-control']").addClass(errorClass).css("background-color", "red"); 
     }, 
     unhighlight: function (element, errorClass, validClass) { 
         $(element).parents(".error").removeClass(errorClass); 
