@@ -107,7 +107,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#applyForm").validate({
   errorClass: 'error',
   errorElement: 'span',
   highlight: function highlight(element, errorClass, validClass) {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(element).parents("div[class='form-group']").addClass(errorClass);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(element).parents("div[class='form-group']").addClass(errorClass).css("background-color", "red");
   },
   unhighlight: function unhighlight(element, errorClass, validClass) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(element).parents(".error").removeClass(errorClass);
@@ -122,7 +122,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#applyForm").validate({
       required: "予定名を記入してください"
     }
   }
-}); //$("input:blank").css("background-color", "red");
+}); //$(".:error").css("background-color", "red");
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').each(function (i, e) {
   var button = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e);

@@ -9,7 +9,7 @@ $("#applyForm").validate({
   errorClass:'error',
     errorElement:'span',
     highlight: function (element, errorClass, validClass) { 
-        $(element).parents("div[class='form-group']").addClass(errorClass); 
+        $(element).parents("div[class='form-group']").addClass(errorClass).css("background-color", "red"); 
     }, 
     unhighlight: function (element, errorClass, validClass) { 
         $(element).parents(".error").removeClass(errorClass); 
@@ -25,7 +25,7 @@ $("#applyForm").validate({
     }
   }
 });
-//$("input:blank").css("background-color", "red");
+//$(".:error").css("background-color", "red");
 
 $('.availability-toggle-button').each((i, e) => {
   const button = $(e);
