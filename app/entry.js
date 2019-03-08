@@ -17,6 +17,7 @@ $("#applyForm").validate({
     }
   }
 });
+$("input:blank").css("background-color", "red");
 
 $('.availability-toggle-button').each((i, e) => {
   const button = $(e);

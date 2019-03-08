@@ -115,6 +115,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#applyForm").validate({
     }
   }
 });
+jquery__WEBPACK_IMPORTED_MODULE_0___default()("input:blank").css("background-color", "red");
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').each(function (i, e) {
   var button = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e);
   button.click(function () {
