@@ -13,7 +13,7 @@ $("#applyForm").validate({
   },
   messages: {
     scheduleName: {
-      require: "予定名を入力してください"
+      required: "予定名を入力してください"
     }
   }
 });
