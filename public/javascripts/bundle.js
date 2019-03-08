@@ -103,6 +103,18 @@ global.jQuery = jquery__WEBPACK_IMPORTED_MODULE_0___default.a;
 
 __webpack_require__(5);
 
+jquery__WEBPACK_IMPORTED_MODULE_0___default()("#applyForm").validate({
+  rules: {
+    scheduleName: {
+      required: true
+    }
+  },
+  messages: {
+    scheduleName: {
+      require: "予定名を入力してください"
+    }
+  }
+});
 jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').each(function (i, e) {
   var button = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e);
   button.click(function () {

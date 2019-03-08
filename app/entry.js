@@ -5,6 +5,18 @@ global.jQuery = $;
 import bootstrap from 'bootstrap';
 // jquery-validation
 require('jquery-validation');
+$("#applyForm").validate({
+  rules: {
+    scheduleName: {
+      required: true
+    }
+  },
+  messages: {
+    scheduleName: {
+      require: "予定名を入力してください"
+    }
+  }
+});
 
 $('.availability-toggle-button').each((i, e) => {
   const button = $(e);
