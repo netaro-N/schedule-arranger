@@ -111,7 +111,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#applyForm").validate({
   },
   messages: {
     scheduleName: {
-      require: "予定名を入力してください"
+      required: "予定名を記入してください"
     }
   }
 });
