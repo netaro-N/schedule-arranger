@@ -2,13 +2,13 @@
   position: relative !important;
 }
 .form-control.is-valid,.was-validated .form-control:valid {
-  background-image: url("valid.png");
+  background-image: url("../images/valid.png");
   background-repeat: no-repeat;
   background-position: center right calc(.375em + .1875rem);
   background-size: calc(.75em + .375rem) calc(.75em + .375rem);
 }
 .form-control.is-invalid, .was-validated .form-control:invalid {
-  background-image: url("invalid.png");
+  background-image: url("../images/invalid.png");
     background-repeat: no-repeat;
     background-position: center right calc(.375em + .1875rem);
     background-size: calc(.75em + .375rem) calc(.75em + .375rem);
