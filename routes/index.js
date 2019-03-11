@@ -4,6 +4,11 @@ var router = express.Router();
 const Schedule = require('../models/schedule');
 const moment = require('moment-timezone');
 
+//曜日を入れてみた
+moment.locale('ja', {
+  weekdaysShort: ["日", "月", "火", "水", "木", "金", "土"],
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   const title = '予定調整くん';
@@ -16,7 +21,7 @@ router.get('/', function(req, res, next) {
       order: [['"updatedAt"', 'DESC']]
     }).then((schedules) => {
       schedules.forEach((schedule) => {
-        schedule.formattedUpdatedAt = moment(schedule.updatedAt).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm');
+        schedule.formattedUpdatedAt = moment(schedule.updatedAt).tz('Asia/Tokyo').format('YYYY/MM/DD (ddd) HH:mm');
       });
       res.render('index', {
         title: title,
