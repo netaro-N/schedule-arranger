@@ -4,3 +4,6 @@
     background-position: center right calc(.375em + .1875rem);
     background-size: calc(.75em + .375rem) calc(.75em + .375rem);
 }
+nav .navbar-nav li a{
+  color: white !important;
+  }
