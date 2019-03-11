@@ -1,6 +1,7 @@
 extends layout
 
 block content
+  a(href="/").btn.btn-secondary TOPへ戻る
   div.card.my-3
     div.card-header
       h4 #{schedule.scheduleName}
@@ -14,6 +15,14 @@ block content
     input(type="text" value=`${herokuURL}schedules/${schedule.scheduleId}/`)#shareURL.form-control
   - var isMine = (user.id === schedule.user.userId)&&(user.provider === schedule.user.userProvider)
   if isMine
+    div#tweet-area
+      a(href="https://twitter.com/intent/tweet?button_hashtag=予定調整くん&ref_src=twsrc%5Etfw"
+        class="twitter-hashtag-button"
+        data-text=schedule.scheduleName
+        data-url=herokuURL
+        data-size=large
+        data-show-count="false") Tweet #予定調整くん
+      script(async src="https://platform.twitter.com/widgets.js" charset="utf-8")
     div
       a(href=`/schedules/${schedule.scheduleId}/edit`).btn.btn-info この予定を編集する
   h3.my-3 出欠表

@@ -1,6 +1,8 @@
 extends layout
 
 block content
+  a(href="/").btn.btn-secondary TOPへ戻る
+  h3.my-3 新規作成ページ
   form(method="post", action="/schedules" novalidate)#applyForm.my-3.needs-validation
     input(type="hidden" name="_csrf" value!=csrfToken)
     div.form-group

@@ -1,6 +1,8 @@
 extends layout
 
 block content
+  a(href=`/schedules/${schedule.scheduleId}`).btn.btn-secondary.mr-2 予定に戻る
+  a(href="/").btn.btn-secondary TOPへ戻る
   h3.my-3 予定の編集
   form(method="post", action=`/schedules/${schedule.scheduleId}?edit=1`)
     input(type="hidden" name="_csrf" value!=csrfToken)

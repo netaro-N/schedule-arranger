@@ -1,4 +1,7 @@
-.form-control.is-valid, .was-validated .form-control:valid {
+.form-group{
+  position: relative !important;
+}
+.form-control.is-valid,.was-validated .form-control:valid {
   background-image: url("valid.png");
   background-repeat: no-repeat;
   background-position: center right calc(.375em + .1875rem);
