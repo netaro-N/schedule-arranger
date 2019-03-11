@@ -1,11 +1,12 @@
 extends layout
 
 block content
-  form(method="post", action="/schedules")#applyForm.my-3
+  form(method="post", action="/schedules" novalidate)#applyForm.my-3.needs-validation
     input(type="hidden" name="_csrf" value!=csrfToken)
     div.form-group
       label(for="scheduleName") 予定名
-      input(type="text" name="scheduleName")#scheduleName.form-control
+      input(type="text" name="scheduleName" required)#scheduleName.form-control
+      div.valid-feedback 入力OK！
     div.form-group
       label(for="memo") メモ
       textarea(name="memo")#memo.form-control
