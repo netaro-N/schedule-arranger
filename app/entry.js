@@ -3,7 +3,25 @@ import $ from 'jquery';
 const global = Function('return this;')();
 global.jQuery = $;
 import bootstrap from 'bootstrap';
-// jquery-validation
+
+//validation.js ブートスラップを活用したバリデーションの雛形　リンク→https://cccabinet.jpn.org/bootstrap4/components/forms?#validation
+window.addEventListener('load', function() {
+  // カスタムブートストラップ検証スタイルを適用するすべてのフォームを取得
+  var forms = document.getElementsByClassName('needs-validation');
+  // ループして帰順を防ぐ
+  var validation = Array.prototype.filter.call(forms, function(form) {
+    form.addEventListener('submit', function(event) {
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  });
+}, false);
+
+/** jquery-validationを利用したバリデーション（メリットは、フォームが沢山ある場合。要学習！）
+
 require('jquery-validation');
 $("#applyForm").validate({
   errorClass:'error',
@@ -25,7 +43,7 @@ $("#applyForm").validate({
     }
   }
 });
-//$(".:error").css("background-color", "red");
+*/
 
 $('.availability-toggle-button').each((i, e) => {
   const button = $(e);
