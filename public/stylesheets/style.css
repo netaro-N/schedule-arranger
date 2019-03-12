@@ -24,3 +24,7 @@ nav .navbar-nav li a{
 nav .navbar-nav li a:hover{
   background-color: gray;
   }
+.d-table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
