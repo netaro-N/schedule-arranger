@@ -23,9 +23,6 @@ html
         if user
           li.nav-item
             a(href="/logout").nav-link #{user.username} をログアウト
-        else
-          li.nav-item
-            a(href="/login").nav-link ログイン
     div.container
       block content
     script(src="/javascripts/bundle.js")
