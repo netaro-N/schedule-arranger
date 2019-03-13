@@ -24,4 +24,7 @@ block content
   h3.my-3 危険な変更
   form(method="post", action=`/schedules/${schedule.scheduleId}?delete=1`)
     input(type="hidden" name="_csrf" value!=csrfToken)
-    button(type="submit").btn.btn-danger この予定を削除する
+    button(type="submit" data-toggle="confirmation"
+            data-btn-ok-label="削除する" data-btn-ok-class="btn-danger"
+            data-btn-cancel-label="しない"
+            data-title="本当に削除しますか？").btn.btn-danger この予定を削除する
