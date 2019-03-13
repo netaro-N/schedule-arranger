@@ -28,3 +28,6 @@ nav .navbar-nav li a:hover{
   border-collapse: separate;
   border-spacing: 0 5px;
 }
+img {
+  border-radius: 5px !important;
+}
