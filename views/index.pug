@@ -2,22 +2,25 @@ extends layout
 
 block content
   div.jumbotron.my-3
-    h1.display-4 予定調整くん
-    p.lead 予定調整くんは予定を作って出欠が取れるサービスです
-    if !user
-      div.d-table
-        div.d-table-row
-          a(href="/login").d-table-cell.btn.btn-lg.btn-social.btn-twitter
-            span.fa.fa-twitter
-            div twitterでログイン
-        div.d-table-row
-          a(href="/login").d-table-cell.btn.btn-lg.btn-social.btn-github
-            span.fa.fa-github
-            div GitHubでログイン
-        div.d-table-row
-          a(href="/login").d-table-cell.btn.btn-lg.btn-social.btn-facebook
-            span.fa.fa-facebook 
-            div facebookでログイン
+    div.row.justify-content-start
+      div.col-10.col-lg-8.col-md-6
+        h1.display-4 予定調整くん
+        p.lead 予定調整くんは予定を作って出欠が取れるサービスです
+      div.col-5.col-lg-4.col-md-3
+        if !user
+          div.d-table
+            div.d-table-row
+              a(href="/auth/twitter").d-table-cell.btn.btn-lg.btn-social.btn-twitter
+                span.fa.fa-twitter
+                div Twitterでログイン
+            div.d-table-row
+              a(href="/auth/github").d-table-cell.btn.btn-lg.btn-social.btn-github
+                span.fa.fa-github
+                div GitHubでログイン
+            div.d-table-row
+              a(href="/login").d-table-cell.btn.btn-lg.btn-social.btn-facebook
+                span.fa.fa-facebook 
+                div Facebookでログイン
   if user
     div
       a(href="/schedules/new").btn.btn-info ＋予定を作る
