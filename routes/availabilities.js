@@ -22,14 +22,14 @@ router.post('/:scheduleId/users/:userId/:userProvider/candidates/:candidateId', 
   }).then(() => {
     // ユーザー数を取得
     return Availability.findAll({
-      attributes: ['userId'],
+      attributes: ['userId','userProvider'],
       where: { scheduleId: scheduleId, candidateId: candidateId }
     });
   }).then((availabilities) => {
     userCount = availabilities.length;
     // 出席人数を取得
     return Availability.findAll({
-      attributes: ['userId'],
+      attributes: ['userId','userProvider'],
       where: { scheduleId: scheduleId, candidateId: candidateId, availability: 2 }
     });
   }).then((attendances) => {
