@@ -36,9 +36,8 @@ router.post('/', authenticationEnsurer,csrfProtection, (req, res, next) => {
 router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
   let storedSchedule = null;
   let storedCandidates = null;
-  let users = null;
-  let availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
-  let commentMap = new Map();
+  const availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
+  const commentMap = new Map();
 
   Schedule.findOne({
     include: [
@@ -104,7 +103,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           });
 
           // 全ユーザー、全候補で二重ループしてそれぞれの出欠の値がない場合には、「欠席」を設定する
-          users = Array.from(userMap).map((keyValue) => keyValue[1]);
+          const users = Array.from(userMap).map((keyValue) => keyValue[1]);
           users.forEach((u) => {
             storedCandidates.forEach((c) => {
               const mapMapKey = u.userId + u.userProvider;
