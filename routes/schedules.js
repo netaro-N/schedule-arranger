@@ -43,7 +43,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
     include: [
       {
         model: User,
-        attributes: ['userId', 'userProvider', 'username']
+        attributes: ['userId', 'username']
       }],
     where: {
       scheduleId: req.params.scheduleId
