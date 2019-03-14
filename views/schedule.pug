@@ -13,7 +13,7 @@ block content
     label(for="shareURL") 共有用 URL:
     - var herokuURL = process.env.HEROKU_URL ? process.env.HEROKU_URL : 'http://example.net:8000/'
     input(type="text" value=`${herokuURL}schedules/${schedule.scheduleId}/`)#shareURL.form-control
-  - var isMine = (user.id === schedule.user.userId)&&(user.provider === schedule.user.userProvider)
+  - var isMine = ((user.id === schedule.user.userId)&&(user.provider === schedule.user.userProvider))
   if isMine
     div#tweet-area
       a(href="https://twitter.com/intent/tweet?button_hashtag=予定調整くん&ref_src=twsrc%5Etfw"
