@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 const authenticationEnsurer = require('./authentication-ensurer');
 const uuid = require('uuid');
-const loader = require('../models/sequelize-loader');
-const sequelize = loader.database;
+//const loader = require('../models/sequelize-loader');
+//const sequelize = loader.database;
 const Schedule = require('../models/schedule');
 const Candidate = require('../models/candidate');
 const User = require('../models/user');
@@ -36,8 +36,8 @@ router.post('/', authenticationEnsurer,csrfProtection, (req, res, next) => {
 router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
   let storedSchedule = null;
   let storedCandidates = null;
-  const availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
-  const commentMap = new Map();
+//  const availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
+//  const commentMap = new Map();
 
   Schedule.findOne({
     include: [
@@ -76,7 +76,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
         });
         }).then((availabilities) => {
           // 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
-
+          const availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
           availabilities.forEach((a) => {
             //IdとProviderを連結させているが、数字+文字列で良いのだろうか？（うまく行ったけど）
             const mapMapKey = a.user.userId + a.user.userProvider;
@@ -118,11 +118,13 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           return Comment.findAll({
             where: { scheduleId: storedSchedule.scheduleId }
           }).then((comments) => {
+            const commentMap = new Map();
             comments.forEach((comment) => {
               const commentMapKey = comment.userId + comment.userProvider;
               commentMap.set(commentMapKey, comment.comment);
             });
 
+/*
             //出席人数を取得
     return Availability.findAll({
       attributes: ['candidateId', [sequelize.fn('COUNT', sequelize.col('userId')), 'count']],
@@ -136,15 +138,15 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
       const attendanceRate = attendanceCount ? Math.round((attendanceCount / users.length * 100)) : 0;
       attendanceMap.set(attendance.candidateId, attendanceRate);
     });
-
+*/
             res.render('schedule', {
               user: req.user,
               schedule: storedSchedule,
               candidates: storedCandidates,
               users: users,
               availabilityMapMap: availabilityMapMap,
-              commentMap: commentMap,
-              attendanceMap:attendanceMap
+              commentMap: commentMap/*,
+              attendanceMap:attendanceMap*/
             });
           });
         });

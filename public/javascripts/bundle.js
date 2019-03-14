@@ -162,16 +162,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').eac
     }, function (data) {
       button.data('availability', data.availability);
       var availabilityLabels = ['欠', '？', '出'];
-      button.text(availabilityLabels[data.availability]); // 出席率を表示し、80％以上なら背景色をブルーに変更
-
-      var attendanceArea = button.parent().parent().find('.attendanceRate');
-      attendanceArea.text(data.attendanceRate + '%');
-      attendanceArea.removeClass('bg-info');
-
-      if (data.attendanceRate >= 80) {
-        attendanceArea.addClass('bg-info');
-      }
-
+      button.text(availabilityLabels[data.availability]);
       var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success'];
       button.removeClass('btn-danger btn-secondary btn-success');
       button.addClass(buttonStyles[data.availability]);

@@ -65,14 +65,6 @@ $('.availability-toggle-button').each((i, e) => {
         const availabilityLabels = ['欠', '？', '出'];
         button.text(availabilityLabels[data.availability]);
 
-// 出席率を表示し、80％以上なら背景色をブルーに変更
-const attendanceArea = button.parent().parent().find('.attendanceRate');
-attendanceArea.text(data.attendanceRate + '%');
-attendanceArea.removeClass('bg-info');
-if (data.attendanceRate >= 80) {
-  attendanceArea.addClass('bg-info');
-}
-
         const buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success'];
         button.removeClass('btn-danger btn-secondary btn-success');
         button.addClass(buttonStyles[data.availability]);
