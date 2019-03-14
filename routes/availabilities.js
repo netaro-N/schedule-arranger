@@ -16,7 +16,7 @@ router.post('/:scheduleId/users/:userId/:userProvider/candidates/:candidateId', 
   Availability.upsert({
     scheduleId: scheduleId,
     userId: userId,
-    //userProvider:userProvider,
+    userProvider:userProvider,
     candidateId: candidateId,
     availability: availability
   }).then(() => {
