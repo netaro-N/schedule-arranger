@@ -33,7 +33,7 @@ block content
     tr
       th 予定
       each user in users
-        th #{user.username}
+        th #{user.username} user.userId=#{user.userId},user.userProvider=#{user.userProvider}
     each candidate in candidates
       tr
         th #{candidate.candidateName}
