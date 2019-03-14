@@ -1,6 +1,19 @@
 extends layout
 
 block content
+  div.d-table
+    div.d-table-row
+      a(href="/auth/twitter").d-table-cell.btn.btn-lg.btn-social.btn-twitter
+        span.fa.fa-twitter
+        div Twitterでログイン
+    div.d-table-row
+      a(href="/auth/github").d-table-cell.btn.btn-lg.btn-social.btn-github
+        span.fa.fa-github
+        div GitHubでログイン
+    div.d-table-row
+      a(href="/auth/facebook").d-table-cell.btn.btn-lg.btn-social.btn-facebook
+        span.fa.fa-facebook 
+        div Facebookでログイン
   a(href="/auth/github").btn.btn-info.my-3 GitHubでログイン
   p
     a(href="/auth/twitter").btn.btn-info.my-3 Twitterでログイン
