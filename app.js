@@ -42,11 +42,11 @@ var TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY //.gitignoreして�
 var TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET //.gitignoreしてある.envファイルに記述
 
 
-/* Facebook認証の準備
+// Facebook認証の準備
 var FacebookStrategy = require('passport-facebook').Strategy;
 var FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
 var FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
-*/
+
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -97,7 +97,7 @@ function (accessToken, refreshToken, profile, done) {
 }
 ));
 
-/*Facebookログイン
+//Facebookログイン
 passport.use(new FacebookStrategy({
   clientID: FACEBOOK_APP_ID,
   clientSecret: FACEBOOK_APP_SECRET,
@@ -115,7 +115,6 @@ passport.use(new FacebookStrategy({
     });
   }
 ));
-*/
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
@@ -194,7 +193,7 @@ app.get('/auth/twitter/callback',
    }
   });
 
-/*Facebook認証のハンドラ
+//Facebook認証のハンドラ
 app.get('/auth/facebook',
 //passport.authenticate('facebook', { scope: ['email']}),
 passport.authenticate('facebook'),
@@ -219,7 +218,6 @@ app.get('/auth/facebook/callback',
      res.redirect('/');
    }
   });
-*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
