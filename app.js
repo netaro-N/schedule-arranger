@@ -41,6 +41,12 @@ var TwitterStrategy = require('passport-twitter').Strategy;
 var TWITTER_CONSUMER_KEY = process.env.TWITTER_CONSUMER_KEY //.gitignoreしてある.envファイルに記述
 var TWITTER_CONSUMER_SECRET = process.env.TWITTER_CONSUMER_SECRET //.gitignoreしてある.envファイルに記述
 
+// Facebook認証の準備
+var FacebookStrategy = require('passport-facebook').Strategy;
+var FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
+var FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
+
+
 passport.serializeUser(function (user, done) {
   done(null, user);
 });
@@ -88,6 +94,25 @@ function (accessToken, refreshToken, profile, done) {
     });
   });
 }
+));
+
+//Facebookログイン
+passport.use(new FacebookStrategy({
+  clientID: FACEBOOK_APP_ID,
+  clientSecret: FACEBOOK_APP_SECRET,
+  callbackURL: process.env.HEROKU_URL ? process.env.HEROKU_URL + 'auth/facebook/callback' : "http://example.net:8000/auth/facebook/callback"
+},
+  function(accessToken, refreshToken, profile, done) {
+    process.nextTick(function () {
+      User.upsert({
+        userId: profile.id,
+        userProvider: profile.provider,
+        username: profile.displayName //facebookの場合、displayNameに名前が格納されているため
+      }).then(() => {
+        done(null, profile);
+      });
+    });
+  }
 ));
 
 var indexRouter = require('./routes/index');
@@ -156,6 +181,32 @@ app.get('/auth/twitter/callback',
   passport.authenticate('twitter', { failureRedirect: '/login' }),
    function (req, res) {
    var loginFrom = req.cookies.loginFrom;
+   // オープンリダイレクタ脆弱性対策
+   if (loginFrom &&
+     !loginFrom.includes('http://') &&
+     !loginFrom.includes('https://')) {
+     res.clearCookie('loginFrom');
+     res.redirect(loginFrom);
+   } else {
+     res.redirect('/');
+   }
+  });
+
+//Facebook認証のハンドラ
+app.get('/auth/facebook',
+//passport.authenticate('facebook', { scope: ['email']}),
+passport.authenticate('facebook'),
+function(req, res){
+  // The request will be redirected to Facebook for authentication, so this
+  // function will not be called.
+});
+//コールバック
+app.get('/auth/facebook/callback', 
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function (req, res) {
+    // facebookではreq.user.usernameに値が入らないので入れておく
+    req.user.username = req.user.displayName;
+    var loginFrom = req.cookies.loginFrom;
    // オープンリダイレクタ脆弱性対策
    if (loginFrom &&
      !loginFrom.includes('http://') &&
