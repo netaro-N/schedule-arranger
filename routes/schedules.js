@@ -36,7 +36,10 @@ router.post('/', authenticationEnsurer,csrfProtection, (req, res, next) => {
 router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
   let storedSchedule = null;
   let storedCandidates = null;
-  
+  let users = null;
+  const availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
+  const commentMap = new Map();
+
   Schedule.findOne({
     include: [
       {
@@ -74,7 +77,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
         });
         }).then((availabilities) => {
           // 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
-          const availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
+
           availabilities.forEach((a) => {
             //IdとProviderを連結させているが、数字+文字列で良いのだろうか？（うまく行ったけど）
             const mapMapKey = a.user.userId + a.user.userProvider;
@@ -101,7 +104,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           });
 
           // 全ユーザー、全候補で二重ループしてそれぞれの出欠の値がない場合には、「欠席」を設定する
-          const users = Array.from(userMap).map((keyValue) => keyValue[1]);
+          users = Array.from(userMap).map((keyValue) => keyValue[1]);
           users.forEach((u) => {
             storedCandidates.forEach((c) => {
               const mapMapKey = u.userId + u.userProvider;
@@ -116,7 +119,6 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           return Comment.findAll({
             where: { scheduleId: storedSchedule.scheduleId }
           }).then((comments) => {
-            const commentMap = new Map();
             comments.forEach((comment) => {
               const commentMapKey = comment.userId + comment.userProvider;
               commentMap.set(commentMapKey, comment.comment);
@@ -143,7 +145,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
               users: users,
               availabilityMapMap: availabilityMapMap,
               commentMap: commentMap,
-              attendanceMap: attendanceMap
+              attendanceMap:attendanceMap
             });
           });
         });
