@@ -37,8 +37,8 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
   let storedSchedule = null;
   let storedCandidates = null;
   let users = null;
-  const availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
-  const commentMap = new Map();
+  let availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
+  let commentMap = new Map();
 
   Schedule.findOne({
     include: [
