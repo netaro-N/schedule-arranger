@@ -1,6 +1,9 @@
 extends layout
 
 block content
+  div user.id=#{user.id} schedule.user.userId=#{schedule.user.userId}
+  p
+  div user.provider=#{user.provider}   schedule.user.userProvider=#{schedule.user.userProvider}
   a(href="/").btn.btn-secondary TOPへ戻る
   div.card.my-3
     div.card-header
