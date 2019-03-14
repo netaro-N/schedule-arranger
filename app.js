@@ -30,6 +30,7 @@ User.sync().then(() => {
 });
 
 //.envファイルの環境変数を、process.env.*へ反映させるモジュール　＝つまり変数の値をこのプロジェクトだけで使える
+//Git管理しないので、当然heroku上ではheroku config:setで設定した値が用いられる
 require("dotenv").load(); //グローバルオブジェクトとしてロード
 // GitHub認証の準備
 var GitHubStrategy = require('passport-github2').Strategy;

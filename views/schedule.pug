@@ -29,11 +29,17 @@ block content
   table.table.table-bordered
     tr
       th 予定
+      th 出席率
       each user in users
         th #{user.username}
     each candidate in candidates
       tr
         th #{candidate.candidateName}
+        - var attendanceRate = attendanceMap.get(candidate.candidateId) || 0;
+          if attendanceRate >= 80
+            th(class="attendanceRate bg-info") #{attendanceRate}%
+          else
+            th(class="attendanceRate") #{attendanceRate}%
         each user in users
           - var mapMapKey = user.userId+user.userProvider
           - var availability = availabilityMapMap.get(mapMapKey).get(candidate.candidateId)
@@ -50,7 +56,7 @@ block content
             else
               h3 #{availabilityLabels[availability]}
     tr
-      th コメント
+      th(colspan="2") コメント
       each user in users
         - var commentMapKey = user.userId + user.userProvider;
         if user.isSelf

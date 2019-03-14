@@ -11,6 +11,7 @@ router.post('/:scheduleId/users/:userId/:userProvider/candidates/:candidateId', 
   const userProvider = req.params.userProvider;
   const candidateId = req.params.candidateId;
   let availability = req.body.availability;
+  let userCount = null;
   availability = availability ? parseInt(availability) : 0;
   Availability.upsert({
     scheduleId: scheduleId,
@@ -19,7 +20,23 @@ router.post('/:scheduleId/users/:userId/:userProvider/candidates/:candidateId', 
     candidateId: candidateId,
     availability: availability
   }).then(() => {
-    res.json({ status: 'OK', availability: availability });
+    // ユーザー数を取得
+    return Availability.findAll({
+      attributes: ['userId'],
+      where: { scheduleId: scheduleId, candidateId: candidateId }
+    });
+  }).then((availabilities) => {
+    userCount = availabilities.length;
+    // 出席人数を取得
+    return Availability.findAll({
+      attributes: ['userId'],
+      where: { scheduleId: scheduleId, candidateId: candidateId, availability: 2 }
+    });
+  }).then((attendances) => {
+    const attendanceCount = attendances.length;
+    // 出席率を計算
+    const attendanceRate = attendanceCount ? Math.round((attendanceCount / userCount * 100)) : 0;
+    res.json({ status: 'OK', availability: availability, attendanceRate: attendanceRate });
   });
 });
 
