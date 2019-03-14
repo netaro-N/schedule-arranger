@@ -193,7 +193,7 @@ app.get('/auth/twitter/callback',
    }
   });
 
-/*Facebook認証のハンドラ
+//Facebook認証のハンドラ
 app.get('/auth/facebook',
 //passport.authenticate('facebook', { scope: ['email']}),
 passport.authenticate('facebook'),
@@ -218,7 +218,7 @@ app.get('/auth/facebook/callback',
      res.redirect('/');
    }
   });
-*/
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
