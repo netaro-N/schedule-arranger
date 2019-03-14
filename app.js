@@ -97,7 +97,7 @@ function (accessToken, refreshToken, profile, done) {
 }
 ));
 
-//Facebookログイン
+/*Facebookログイン
 passport.use(new FacebookStrategy({
   clientID: FACEBOOK_APP_ID,
   clientSecret: FACEBOOK_APP_SECRET,
@@ -115,7 +115,7 @@ passport.use(new FacebookStrategy({
     });
   }
 ));
-
+*/
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
