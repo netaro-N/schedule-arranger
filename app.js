@@ -16,13 +16,13 @@ var Candidate = require('./models/candidate');
 var Comment = require('./models/comment');
 User.sync().then(() => {
   Schedule.belongsTo(User, {foreignKey: 'createdBy',targetKey:'userId'});
-  Schedule.belongsTo(User, {foreignKey: 'userProvider',targetKey: 'userProvider'});
+  //Schedule.belongsTo(User, {foreignKey: 'userProvider',targetKey: 'userProvider'});
   Schedule.sync();
   Comment.belongsTo(User, {foreignKey: 'userId',targetKey:'userId'});
-  Comment.belongsTo(User, {foreignKey: 'userProvider',targetKey:'userProvider'});
+  //Comment.belongsTo(User, {foreignKey: 'userProvider',targetKey:'userProvider'});
   Comment.sync();
   Availability.belongsTo(User, {foreignKey: 'userId',targetKey:'userId'});
-  Availability.belongsTo(User, {foreignKey: 'userProvider',targetKey: 'userProvider'});
+  //Availability.belongsTo(User, {foreignKey: 'userProvider',targetKey: 'userProvider'});
   Candidate.sync().then(() => {
     Availability.belongsTo(Candidate, {foreignKey: 'candidateId'});
     Availability.sync();
