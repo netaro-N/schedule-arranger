@@ -43,7 +43,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
     include: [
       {
         model: User,
-        attributes: ['userId', 'username']
+        attributes: ['userId', 'userProvider', 'username']
       }],
     where: {
       scheduleId: req.params.scheduleId
@@ -113,7 +113,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
               availabilityMapMap.set(mapMapKey, map);
             });
           });
-
+console.log(users);
           // コメント取得
           return Comment.findAll({
             where: { scheduleId: storedSchedule.scheduleId }

@@ -11,7 +11,8 @@ block content
     div.card-body
       p(style="white-space:pre;") #{schedule.memo}
     div.card-footer
-      p 作成者: #{schedule.user.username}
+      p 作成者schedule.user.username: #{schedule.user.username}
+      p schedule.createdBy: #{schedule.createdBy}
   div.form-group
     label(for="shareURL") 共有用 URL:
     - var herokuURL = process.env.HEROKU_URL ? process.env.HEROKU_URL : 'http://example.net:8000/'
