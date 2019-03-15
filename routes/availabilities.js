@@ -11,6 +11,7 @@ router.post('/:scheduleId/users/:userId/:userProvider/candidates/:candidateId', 
   const userProvider = req.params.userProvider;
   const candidateId = req.params.candidateId;
   let availability = req.body.availability;
+  console.log("ユーザーIDとプロバイダーは"+userId+userProvider);
 //  let userCount = null;
   availability = availability ? parseInt(availability) : 0;
   Availability.upsert({
