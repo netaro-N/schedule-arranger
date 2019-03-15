@@ -103,7 +103,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
               username: a.user.username
             });
           });
-
+console.log("userMapは"+userMap);
           // 全ユーザー、全候補で二重ループしてそれぞれの出欠の値がない場合には、「欠席」を設定する
           const users = Array.from(userMap).map((keyValue) => keyValue[1]);
           users.forEach((u) => {
@@ -115,7 +115,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
               availabilityMapMap.set(mapMapKey, map);
             });
           });
-console.log(users);
+console.log("usersは"+users);
           // コメント取得
           return Comment.findAll({
             where: { scheduleId: storedSchedule.scheduleId }
