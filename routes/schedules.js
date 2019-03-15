@@ -44,7 +44,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
       {
         model: User,
         attributes: ['userId', 'userProvider', 'username'],
-        required:true
+        //required:true
       }],
     where: {
       scheduleId: req.params.scheduleId
@@ -70,7 +70,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
             {
               model: User,
               attributes: ['userId', 'userProvider', 'username'],
-              required:true
+              //required:true
             }
           ],
           where: { scheduleId: storedSchedule.scheduleId },
