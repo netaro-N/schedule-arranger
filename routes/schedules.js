@@ -83,6 +83,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           availabilities.forEach((a) => {
             //IdとProviderを連結させているが、数字+文字列で良いのだろうか？（うまく行ったけど）
             const mapMapKey = a.user.userId + a.user.userProvider;
+            console.log(a+"のmapMapKeyは"+mapMapKey);
             const map = availabilityMapMap.get(mapMapKey) || new Map();
             map.set(a.candidateId, a.availability);
             availabilityMapMap.set(mapMapKey, map);
