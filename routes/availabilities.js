@@ -20,7 +20,8 @@ router.post('/:scheduleId/users/:userId/:userProvider/candidates/:candidateId', 
     userProvider:userProvider,
     candidateId: candidateId,
     availability: availability
-  }).then(() => {
+  }).then((a) => {
+    console.log(a);
     res.json({ status: 'OK', availability: availability});
 /*
     // ユーザー数を取得

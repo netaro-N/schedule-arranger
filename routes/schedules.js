@@ -77,6 +77,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
           order: [[User, 'username', 'ASC'], ['"candidateId"', 'ASC']]
         });
         }).then((availabilities) => {
+          console.log(availabilities);
           // 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
           const availabilityMapMap = new Map();// 出欠 MapMap(キー:ユーザー ID+Provider, 値:出欠Map(キー:候補 ID, 値:出欠)) を作成する
           availabilities.forEach((a) => {
