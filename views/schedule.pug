@@ -33,11 +33,17 @@ block content
   table.table.table-bordered
     tr
       th 予定
+      th 出席率
       each user in users
         th #{user.username} user.userId=#{user.userId},user.userProvider=#{user.userProvider}
     each candidate in candidates
       tr
         th #{candidate.candidateName}
+        - var attendanceRate = attendanceMap.get(candidate.candidateId) || 0;
+          if attendanceRate >= 80
+            th.attendanceRate.bg-info #{attendanceRate}%
+          else
+            th.attendanceRate #{attendanceRate}%
         each user in users
           - var mapMapKey = user.userId+user.userProvider
           - var availability = availabilityMapMap.get(mapMapKey).get(candidate.candidateId)
