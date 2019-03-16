@@ -172,6 +172,9 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('.availability-toggle-button').eac
         attendanceArea.addClass('bg-info');
       }
 
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()("#".concat(candidateId)).css({
+        "width": data.attendanceRate + "%"
+      });
       var buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success'];
       button.removeClass('btn-danger btn-secondary btn-success');
       button.addClass(buttonStyles[data.availability]);
