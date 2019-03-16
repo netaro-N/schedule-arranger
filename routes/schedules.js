@@ -143,6 +143,7 @@ router.get('/:scheduleId', authenticationEnsurer, (req, res, next) => {
       const attendanceCount = attendance.dataValues['count'];
       const attendanceRate = attendanceCount ? Math.round((attendanceCount / users.length * 100)) : 0;
       attendanceMap.set(attendance.candidateId, attendanceRate);
+      console.log(attendance.candidateId+"のusers.lengthは"+users.length+"です");
     });
 
             res.render('schedule', {
