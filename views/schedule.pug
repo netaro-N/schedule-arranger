@@ -60,7 +60,7 @@ block content
             else
               h3 #{availabilityLabels[availability]}
     tr
-      th コメント
+      th(colspan="2") コメント
       each user in users
         - var commentMapKey = user.userId + user.userProvider;
         if user.isSelf
