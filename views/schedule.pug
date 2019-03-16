@@ -40,10 +40,13 @@ block content
       tr
         th #{candidate.candidateName}
         - var attendanceRate = attendanceMap.get(candidate.candidateId) || 0;
+        - var attendanceId = candidate.candidateId
           if attendanceRate >= 80
-            th.attendanceRate.bg-info #{attendanceRate}%
+            th
+              div(id=attendanceId,style={background:'yellow',width:attendanceRate +'%'}).attendanceRate.bg-info #{attendanceRate}%
           else
-            th.attendanceRate #{attendanceRate}%
+            th
+              div(id=attendanceId,style={background:'yellow',width:attendanceRate +'%'}).attendanceRate #{attendanceRate}%
         each user in users
           - var mapMapKey = user.userId+user.userProvider
           - var availability = availabilityMapMap.get(mapMapKey).get(candidate.candidateId)
