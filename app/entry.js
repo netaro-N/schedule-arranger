@@ -72,6 +72,7 @@ attendanceArea.removeClass('bg-info');
 if (data.attendanceRate >= 80) {
   attendanceArea.addClass('bg-info');
 }
+$(`#${candidateId}`).css({"width":data.attendanceRate+"%"});
 
         const buttonStyles = ['btn-danger', 'btn-secondary', 'btn-success'];
         button.removeClass('btn-danger btn-secondary btn-success');
