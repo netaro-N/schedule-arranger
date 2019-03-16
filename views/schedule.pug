@@ -1,9 +1,9 @@
 extends layout
 
 block content
-  div user.id=#{user.id} schedule.user.userId=#{schedule.user.userId}
-  p
-  div user.provider=#{user.provider}   schedule.user.userProvider=#{schedule.user.userProvider}
+  //- div user.id=#{user.id} schedule.user.userId=#{schedule.user.userId}
+      p
+      div user.provider=#{user.provider}   schedule.user.userProvider=#{schedule.user.userProvider}
   a(href="/").btn.btn-secondary TOPへ戻る
   div.card.my-3
     div.card-header
@@ -11,8 +11,8 @@ block content
     div.card-body
       p(style="white-space:pre;") #{schedule.memo}
     div.card-footer
-      p 作成者schedule.user.username: #{schedule.user.username}
-      p schedule.createdBy: #{schedule.createdBy}
+      p 作成者: #{schedule.user.username}
+      //-p schedule.createdBy: #{schedule.createdBy}
   div.form-group
     label(for="shareURL") 共有用 URL:
     - var herokuURL = process.env.HEROKU_URL ? process.env.HEROKU_URL : 'http://example.net:8000/'
@@ -35,7 +35,7 @@ block content
       th 予定
       th 出席率
       each user in users
-        th #{user.username} user.userId=#{user.userId},user.userProvider=#{user.userProvider}
+        th #{user.username} <!-- user.userId=#{user.userId},user.userProvider=#{user.userProvider} -->
     each candidate in candidates
       tr
         th #{candidate.candidateName}
