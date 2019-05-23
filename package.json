@@ -17,7 +17,7 @@
     "express-session": "^1.15.6",
     "helmet": "^3.16.0",
     "http-errors": "~1.7.2",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "jquery-validation": "^1.19.0",
     "moment-timezone": "^0.5.23",
     "morgan": "~1.9.1",
@@ -29,7 +29,7 @@
     "pg-hstore": "^2.3.2",
     "popper.js": "^1.14.7",
     "pug": "^2.0.3",
-    "sequelize": "^5.1.0",
+    "sequelize": "^5.8.6",
     "serve-favicon": "^2.5.0",
     "uuid": "^3.3.2"
   },
